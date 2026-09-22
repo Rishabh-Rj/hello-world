@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Production MCP Architecture</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Inter, Arial, sans-serif;
+    background: #f7f9fc;
+    color: #102a43;
+  }
+  .page {
+    width: 1500px;
+    min-height: 1000px;
+    margin: 0 auto;
+    padding: 34px 42px 40px;
+    background: white;
+  }
+  h1 {
+    margin: 0;
+    text-align: center;
+    font-size: 34px;
+    letter-spacing: -0.8px;
+  }
+  .subtitle {
+    text-align: center;
+    margin: 8px 0 28px;
+    font-size: 20px;
+    color: #334e68;
+  }
+  .top {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 24px;
+    align-items: stretch;
+  }
+  .card, .side-card, .system, .platform, .integration, .bottom {
+    border: 1.5px solid #b8c7d9;
+    border-radius: 12px;
+    background: #fff;
+  }
+  .users {
+    min-height: 142px;
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    gap: 34px;
+    background: #f3f8fe;
+  }
+  .users .person {
+    font-size: 52px;
+  }
+  .users h2 { margin: 0 0 5px; font-size: 23px; }
+  .users p { margin: 5px 0; color: #486581; }
+  .icons {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+    margin-left: auto;
+    font-weight: 700;
+    text-align: center;
+  }
+  .icon-box { font-size: 17px; }
+  .emoji { display:block; font-size: 38px; margin-bottom: 5px; }
+  .request {
+    padding: 20px;
+    background: #f7fbff;
+  }
+  .request ul { margin: 10px 0 0; padding-left: 20px; line-height: 1.55; }
+  .arrow-down {
+    text-align: center;
+    font-size: 30px;
+    color: #3178c6;
+    height: 48px;
+    padding-top: 8px;
+  }
+  .pcf {
+    border: 2px solid #48a868;
+    border-radius: 15px;
+    padding: 22px 28px 24px;
+    background: #f5fcf7;
+    position: relative;
+  }
+  .pcf-label {
+    position: absolute;
+    left: 18px;
+    top: 18px;
+    color: #177245;
+    font-weight: 800;
+    font-size: 24px;
+  }
+  .pcf-label span {
+    display:block;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 4px;
+  }
+  .mcp {
+    margin: 28px 70px 0 145px;
+    border: 2px solid #3979e6;
+    border-radius: 13px;
+    padding: 18px;
+    background: #edf5ff;
+    text-align: center;
+  }
+  .mcp h2 { margin: 0; font-size: 26px; }
+  .mcp .small { color:#486581; margin-top:4px; }
+  .tool-grid {
+    margin-top: 18px;
+    display:grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 9px;
+  }
+  .tool {
+    background:white;
+    border:1px solid #b7c9e2;
+    border-radius:8px;
+    padding: 12px 7px;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .integration {
+    margin: 15px 70px 0 145px;
+    padding: 15px;
+    text-align:center;
+    background:#eafaf0;
+    border-color:#61bf85;
+  }
+  .integration strong { font-size: 20px; }
+  .integration span { color:#486581; }
+  .side-card {
+    padding:13px 15px;
+    background:white;
+  }
+  .side-card strong { display:block; font-size:15px; }
+  .side-card span { color:#627d98; font-size:13px; }
+  .enterprise {
+    margin-top: 24px;
+    padding: 20px 28px 24px;
+    border:1.5px solid #b8c7d9;
+    border-radius:13px;
+    background:#f8fafc;
+  }
+  .enterprise h2 { margin:0 0 15px; font-size:22px; }
+  .systems {
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:20px;
+  }
+  .system {
+    padding:18px;
+    min-height:155px;
+    background:white;
+  }
+  .system h3 { margin:0 0 8px; font-size:18px; }
+  .system .symbol { font-size:33px; float:left; margin-right:10px; }
+  .system p { clear:both; color:#526d82; line-height:1.4; margin-bottom:0; font-size:14px; }
+  .rail {
+    border:1.5px dashed #9fb3c8;
+    border-radius:12px;
+    padding:17px;
+    background:#fff;
+  }
+  .rail h3 { margin:0 0 7px; font-size:18px; }
+  .rail p { margin:0; color:#627d98; line-height:1.4; font-size:14px; }
+  .bottom {
+    margin-top:25px;
+    padding:20px 28px;
+    background:#f4f7fb;
+    text-align:center;
+  }
+  .bottom h2 { margin:0 0 7px; font-size:20px; }
+  .bottom p { margin:0; color:#627d98; }
+  .connector-note {
+    text-align:center;
+    font-size:14px;
+    color:#486581;
+    margin:10px 0 0;
+  }
+  @media (max-width: 900px) {
+    .page { width:100%; padding:20px; }
+    .top { grid-template-columns:1fr; }
+    .users { flex-wrap:wrap; }
+    .icons { margin-left:0; }
+    .mcp, .integration { margin-left:0; margin-right:0; }
+        .systems { grid-template-columns:1fr 1fr; }
+  }
+
+.brand-icon{width:58px;height:58px;display:block;margin:0 auto 7px}
+.brand-label{display:block;font-size:15px;font-weight:800}
+.brand-stack{min-width:105px;text-align:center}
+.pcf-cloud{width:40px;height:40px;display:inline-block;vertical-align:middle;margin-right:8px}
+.service-icon{width:30px;height:30px;display:inline-block;vertical-align:middle;margin-right:7px}
+.mcp-cube{width:48px;height:48px;vertical-align:middle;margin-right:9px}
+.system-icon{width:40px;height:40px;float:left;margin-right:10px}
+.icons{gap:22px}
+
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Production Architecture</h1>
+  <div class="subtitle">MCP for API Discovery &amp; Legacy Modernization</div>
+
+  <div class="top">
+    <div class="users card">
+      <div class="person">👤</div>
+      <div>
+        <h2>Developers / RAMs</h2>
+        <p>Internal users working on legacy applications and modernization projects</p>
+      </div>
+      <div class="icons">
+        <div class="brand-stack">
+          <svg class="brand-icon" viewBox="0 0 64 64"><defs><linearGradient id="ijg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff2d8b"/><stop offset=".5" stop-color="#ff7a00"/><stop offset="1" stop-color="#5b43ff"/></linearGradient></defs><rect x="5" y="5" width="54" height="54" rx="8" fill="url(#ijg)"/><rect x="14" y="14" width="36" height="36" rx="2" fill="#111827"/><text x="32" y="29" text-anchor="middle" font-size="12" font-weight="800" fill="white">IJ</text><path d="M19 39h18M19 44h12" stroke="white" stroke-width="3" stroke-linecap="round"/></svg>
+          <span class="brand-label">IntelliJ IDEA</span>
+        </div>
+        <div style="font-size:25px">+</div>
+        <div class="brand-stack">
+          <svg class="brand-icon" viewBox="0 0 64 64"><path d="M32 7c-15 0-26 10-26 24 0 12 8 20 18 23v-8c-6-2-10-7-10-15 0-10 8-17 18-17s18 7 18 17c0 8-4 13-10 15v8c10-3 18-11 18-23C58 17 47 7 32 7z" fill="#172b4d"/><circle cx="24" cy="29" r="4" fill="white"/><circle cx="40" cy="29" r="4" fill="white"/><path d="M22 39c6 5 14 5 20 0" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/></svg>
+          <span class="brand-label">GitHub Copilot</span>
+        </div>
+        <div class="brand-stack">
+          <svg class="brand-icon" viewBox="0 0 64 64"><rect x="8" y="6" width="48" height="52" rx="5" fill="#edf3fa" stroke="#526d82" stroke-width="2"/><path d="M8 17h48" stroke="#526d82" stroke-width="2"/><circle cx="15" cy="11.5" r="2" fill="#526d82"/><circle cx="22" cy="11.5" r="2" fill="#526d82"/><path d="M20 31l-7 6 7 6M44 31l7 6-7 6M36 27l-8 20" fill="none" stroke="#3178c6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="brand-label">Legacy Applications</span>
+        </div>
+      </div>
+    </div>
+    <div class="request side-card">
+      <strong>Developer interaction</strong>
+      <ul>
+        <li>Natural-language queries</li>
+        <li>API details &amp; documentation</li>
+        <li>Usage &amp; recommendations</li>
+        <li>Integrated into development flow</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+  <div class="card" style="text-align:center;padding:10px;background:#f8fbff;">
+    <strong>Corporate Network</strong> &nbsp;•&nbsp; SSO / VPN / Firewall
+  </div>
+  <div class="arrow-down">↓</div>
+
+  <section class="pcf">
+    <div class="pcf-label"><svg class="pcf-cloud" viewBox="0 0 64 64"><path d="M19 49h30c8 0 12-5 12-11s-5-11-12-11c-2-9-9-14-18-14-10 0-18 7-19 17C6 31 2 36 2 42c0 4 5 7 17 7z" fill="#2f9e61"/></svg>PCF <span>Tanzu Application Service • Enterprise Platform</span></div>
+
+    <div class="mcp">
+      <h2><svg class="mcp-cube" viewBox="0 0 64 64"><path d="M32 4l22 12v32L32 60 10 48V16L32 4z" fill="#3979e6"/><path d="M32 14l13 7v19l-13 7-13-7V21l13-7z" fill="white"/><path d="M32 14v33M19 21l13 7 13-7" fill="none" stroke="#3979e6" stroke-width="3"/></svg>Enterprise MCP Server</h2>
+      <div class="small">Spring Boot • Deployed on PCF</div>
+      <div class="tool-grid">
+        <div class="tool">MCP Tools<br><small>Services</small></div>
+        <div class="tool">Orchestration<br><small>&amp; Reasoning</small></div>
+        <div class="tool">Caching</div>
+        <div class="tool">Config &amp;<br><small>Connections</small></div>
+        <div class="tool">Logging &amp;<br><small>Monitoring</small></div>
+      </div>
+    </div>
+  </section>
+
+<div class="integration">
+      <strong><svg class="service-icon" viewBox="0 0 40 40"><circle cx="10" cy="20" r="5" fill="#2f8f5b"/><circle cx="30" cy="10" r="5" fill="#2f8f5b"/><circle cx="30" cy="30" r="5" fill="#2f8f5b"/><path d="M14 18l11-6M14 22l11 6" stroke="#2f8f5b" stroke-width="3"/></svg>Integration Layer</strong><br>
+      <span>Secure connectors / adapters / approved internal APIs</span>
+    </div>
+  </section>
+
+  <div class="connector-note"><strong>Secure API / connector calls</strong> &nbsp;•&nbsp; authenticated &nbsp;•&nbsp; authorized &nbsp;•&nbsp; audited</div>
+
+  <section class="enterprise">
+    <h2>Enterprise Systems (Internal)</h2>
+    <div class="systems">
+      <div class="system">
+        <svg class="system-icon" viewBox="0 0 48 48"><circle cx="24" cy="24" r="8" fill="#526d82"/><path d="M24 4v9M24 35v9M4 24h9M35 24h9M10 10l6 6M32 32l6 6M38 10l-6 6M16 32l-6 6" stroke="#526d82" stroke-width="5" stroke-linecap="round"/></svg><h3>Middleware / API Catalog</h3>
+        <p>API details, packet mapping, consumers, status, existing integrations</p>
+      </div>
+      <div class="system">
+        <svg class="system-icon" viewBox="0 0 48 48"><path d="M11 31c4-7 8-10 14-7l12 6-5 9-12-6c-2-1-4 0-6 3z" fill="#1f73d8"/><path d="M37 17c-4 7-8 10-14 7l-12-6 5-9 12 6c2 1 4 0 6-3z" fill="#0b55c7"/></svg><h3>Confluence</h3>
+        <p>Documentation, design specifications, guides and architecture information</p>
+      </div>
+      <div class="system">
+        <svg class="system-icon" viewBox="0 0 48 48"><path d="M24 5l19 19-19 19L5 24 24 5z" fill="#3178d8"/><path d="M24 13l11 11-11 11-11-11 11-11z" fill="#4b8df0"/></svg><h3>Jira</h3>
+        <p>Related tickets, feature requests, implementation status and ownership</p>
+      </div>
+      <div class="system">
+        <svg class="system-icon" viewBox="0 0 48 48"><rect x="5" y="5" width="38" height="38" rx="6" fill="#5aab45"/><path d="M13 16h14M13 24h10M13 32h16" stroke="white" stroke-width="4" stroke-linecap="round"/></svg><h3>Splunk</h3>
+        <p>Logs, usage, transaction search, API call patterns and error analysis</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="bottom">
+    <h2>Enterprise Data &amp; Existing Systems</h2>
+    <p>Existing infrastructure is accessed through approved APIs, services and connectors — not direct database access.</p>
+  </div>
+</div>
+</body>
+</html>
