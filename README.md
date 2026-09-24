@@ -20,4 +20,3 @@ How organized, engaging, clear, and convincing was the presentation and demo flo
 Total Weightage — 100%
 
 Impact of Solution: 35% + Gap Analysis Depth: 15% + Technical Approach & Execution: 30% + Pitch & Deliverables: 20% = 100%
-
